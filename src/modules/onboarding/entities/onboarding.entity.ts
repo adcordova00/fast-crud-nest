@@ -5,42 +5,42 @@ export class OnboardingEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   identity!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   contact!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   residentialAddress!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   shippingAddress!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   personal!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   employment!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   financial!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   academic!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   health!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   security!: object;
 
-  @Column('jsonb', { nullable: true })
+  @Column('text', { nullable: true })
   terms!: object;
 
   @Column({ default: false })
   isDeleted!: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 }
