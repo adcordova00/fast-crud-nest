@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { OnboardingRepositoryPort, ONBOARDING_REPOSITORY_PORT } from 'core/ports/onboarding-repository.port';
+import { OnboardingRepositoryPort, ONBOARDING_REPOSITORY_PORT } from '../../core/ports/onboarding-repository.port';
 import { CreateOnboardingDto } from './dto/create-onboarding.dto';
-import { FastCrudValidationException } from 'core/exceptions/validation.exception';
-import { FastCrudException } from 'core/exceptions/fast-crud.exception';
+import { FastCrudValidationException } from '../../core/exceptions/validation.exception';
+import { FastCrudException } from '../../core/exceptions/fast-crud.exception';
 
 @Injectable()
 export class OnboardingService {
