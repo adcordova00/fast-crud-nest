@@ -15,3 +15,11 @@ export * from './modules/login/dto/create-login.dto';
 export * from './modules/login/dto/update-login.dto';
 export * from './core/ports/login-repository.port';
 export * from './modules/login/login.service';
+
+// Products Module Exports
+export * from './modules/products/products.module';
+export * from './modules/products/entities/products.entity';
+export * from './modules/products/dto/create-products.dto';
+export * from './modules/products/dto/update-products.dto';
+export * from './core/ports/products-repository.port';
+export * from './modules/products/products.service';
