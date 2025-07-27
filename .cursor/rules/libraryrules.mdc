@@ -1,0 +1,205 @@
+---
+alwaysApply: true
+---
+## 📝 DTOs & Validation Rules
+
+### Complex DTO Structure (CRITICAL)
+- Create granular, nested DTOs like the onboarding example
+- Group related fields into logical sections (Identity, Contact, Address, etc.)
+- Use class-validator decorators extensively
+- Make most fields @IsOptional() for flexibility
+- Use @ValidateNested() and @Type() for nested objects
+
+### Validation Decorators
+- @IsEmail() for emails
+- @IsPhoneNumber() for phones  
+- @IsDateString() for dates
+- @IsNumber() for numbers
+- @IsBoolean() for booleans
+- @IsString() for text
+- @IsArray() for arrays
+
+### Update DTOs
+- Extract types from CreateDTO using TypeScript utility types
+- Make all nested properties Partial<>
+- Maintain same structure as Create DTOs
+
+---
+
+## 🗄️ Database & Entities
+
+### TypeORM Entities
+- Use @Entity() decorator with table name
+- @PrimaryGeneratedColumn('uuid') for IDs
+- Store complex objects as @Column('text') and serialize as needed
+- ALWAYS include soft delete: `@Column({ default: false }) isDeleted!: boolean`
+- Include timestamps: `@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' }) createdAt!: Date`
+
+### Repository Contracts
+- Define interfaces with standard CRUD operations:
+  - create(data): Promise<any>
+  - findAll(params?): Promise<any[]>
+  - findById(id): Promise<any>
+  - update(id, data): Promise<any>
+  - softDelete(id): Promise<void>
+
+---
+
+## ⚠️ Error Handling
+
+### Custom Exceptions
+- Use FastCrudException for general errors
+- Use FastCrudValidationException for validation errors
+- Include error codes, messages, status codes, and context
+- Wrap repository operations in try-catch blocks
+- Check existence before update/delete operations
+
+### Error Structure
+```typescript
+throw new FastCrudException(
+  'ERROR_CODE', 
+  'Human readable message', 
+  statusCode, 
+  context
+);
+```
+
+---
+
+## 🔄 Service Layer Rules
+
+### Business Logic
+- Services contain ALL business logic
+- Validate entity existence before operations
+- Use descriptive error messages with entity IDs
+- Implement soft delete pattern
+- Handle pagination parameters
+
+### Service Methods Pattern
+- create(): Handle creation with error wrapping
+- findAll(): Support pagination and filtering
+- findById(): Validate existence, throw if not found
+- update(): Check existence first, then update
+- softDelete(): Verify existence, then mark as deleted
+
+---
+
+## 📦 Module Export Strategy
+
+### index.ts Exports
+- Export main module class
+- Export all DTOs (Create, Update)
+- Export entities
+- Export repository ports/interfaces
+- Export services for external use
+
+### Package.json Structure
+- "main": "dist/index.js"
+- "types": "dist/index.d.ts"
+- Include build script: "tsc"
+- Include proper dependencies for NestJS, TypeORM, validation
+
+---
+
+## 🎯 TypeScript Configuration
+
+### tsconfig.json Requirements
+- "experimentalDecorators": true
+- "emitDecoratorMetadata": true
+- "strict": true
+- "noImplicitAny": false (for flexibility)
+- "baseUrl": "./src"
+- "outDir": "./dist"
+
+### Type Safety
+- Use ! assertion for class properties with decorators
+- Prefer interfaces for contracts
+- Use proper typing for repository methods
+- Avoid `any` except for flexibility in generic CRUD operations
+
+---
+
+## 🚀 Code Quality Rules
+
+### Naming Conventions
+- Services: {ModuleName}Service
+- Controllers: {ModuleName}Controller
+- Entities: {ModuleName}Entity
+- DTOs: Create{ModuleName}Dto, Update{ModuleName}Dto
+- Interfaces: {ModuleName}RepositoryPort
+
+### Comments & Documentation
+- Use '[FAST-CRUD]' prefix in console logs
+- Document complex business logic
+- Include JSDoc for public APIs
+- Explain architectural decisions in comments
+
+### File Organization
+- Group related functionality in modules
+- Keep controllers, services, DTOs, entities separate
+- Use barrel exports (index.ts) appropriately
+- Maintain consistent folder structure
+
+---
+
+## 🔐 Security Considerations
+
+### Input Validation
+- Validate ALL inputs using class-validator
+- Sanitize data before database operations
+- Use parameterized queries (TypeORM handles this)
+- Implement proper error responses without data leakage
+
+### Authentication Integration
+- Support multiple auth providers
+- Use standard OAuth 2.0 flows
+- Implement JWT token validation
+- Support refresh token rotation
+
+---
+
+## 📋 Testing Strategy
+
+### Test Structure
+- Unit tests for services
+- Integration tests for controllers
+- Mock repository dependencies
+- Test error scenarios thoroughly
+- Use descriptive test names
+
+### Test Organization
+```
+src/modules/{module}/
+└── __tests__/
+    ├── {module}.service.spec.ts
+    └── {module}.controller.spec.ts
+```
+
+---
+
+## 🎨 API Design
+
+### REST Conventions
+- POST /{resource} - Create
+- GET /{resource} - List with pagination
+- GET /{resource}/:id - Get by ID
+- PUT /{resource}/:id - Update
+- DELETE /{resource}/:id - Soft delete
+
+### Response Format
+```typescript
+{
+  status: 'success' | 'error',
+  message: string,
+  data: T
+}
+```
+
+### Query Parameters
+- Support pagination: ?page=1&limit=10
+- Support filtering based on entity properties
+- Validate query parameters using DTOs
+
+---
+
+Remember: This is a LIBRARY, not an application. Focus on flexibility, extensibility, and clean interfaces that consuming applications can implement. 
