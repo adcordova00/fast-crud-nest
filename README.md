@@ -74,8 +74,10 @@ import {
   FastCrudModule, 
   LoginEntity, 
   OnboardingEntity,
+  ProductsEntity,
   LOGIN_REPOSITORY_PORT,
-  ONBOARDING_REPOSITORY_PORT 
+  ONBOARDING_REPOSITORY_PORT,
+  PRODUCTS_REPOSITORY_PORT 
 } from 'fast-crud-nest';
 
 @Module({
@@ -87,7 +89,7 @@ import {
       synchronize: true,
     }),
     FastCrudModule.forRoot({
-      // Both modules are optional - use what you need
+      // All modules are optional - use what you need
       login: {
         repositoryProvider: {
           provide: LOGIN_REPOSITORY_PORT,
@@ -98,6 +100,12 @@ import {
         repositoryProvider: {
           provide: ONBOARDING_REPOSITORY_PORT,
           useClass: YourOnboardingRepository, // Your implementation
+        },
+      },
+      products: {
+        repositoryProvider: {
+          provide: PRODUCTS_REPOSITORY_PORT,
+          useClass: YourProductsRepository, // Your implementation
         },
       },
     }),
@@ -299,6 +307,180 @@ The Login module provides comprehensive authentication features:
 | PUT | `/auth/security/2fa/enable/:id` | Enable 2FA |
 | GET | `/auth/sessions/:id` | Get user sessions |
 | GET | `/auth/admin/users/stats` | Admin user stats |
+
+---
+
+## 📦 Products Module Usage
+
+The Products module provides comprehensive e-commerce product management:
+
+### Basic Product Creation
+
+```typescript
+// POST /products
+{
+  "catalog": {
+    "name": "Wireless Bluetooth Headphones",
+    "sku": "WBH-001",
+    "barcode": "1234567890123",
+    "shortDescription": "Premium wireless headphones with noise cancellation",
+    "longDescription": "Experience crystal-clear audio with our premium wireless Bluetooth headphones...",
+    "type": "physical",
+    "status": "active",
+    "brand": "AudioTech",
+    "weight": 0.35,
+    "dimensions": {
+      "length": 20,
+      "width": 18,
+      "height": 8,
+      "unit": "cm"
+    },
+    "tags": ["wireless", "bluetooth", "noise-cancelling", "premium"]
+  },
+  "pricing": {
+    "basePrice": 199.99,
+    "salePrice": 149.99,
+    "currency": "USD",
+    "priceType": "fixed",
+    "discounts": {
+      "percentage": 25,
+      "startDate": "2024-01-01T00:00:00Z",
+      "endDate": "2024-01-31T23:59:59Z"
+    }
+  },
+  "inventory": {
+    "currentStock": 100,
+    "reorderLevel": 20,
+    "stockStatus": "in_stock",
+    "trackInventory": true,
+    "locations": [
+      {
+        "warehouseId": "WH-001",
+        "warehouseName": "Main Warehouse",
+        "quantity": 100,
+        "reserved": 5
+      }
+    ]
+  },
+  "specifications": {
+    "features": [
+      {
+        "name": "Battery Life",
+        "value": "30",
+        "unit": "hours"
+      },
+      {
+        "name": "Connectivity",
+        "value": "Bluetooth 5.0"
+      }
+    ],
+    "warranty": {
+      "duration": 24,
+      "type": "manufacturer",
+      "coverage": "Full replacement"
+    }
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://example.com/headphones-main.jpg",
+        "alt": "Wireless Bluetooth Headphones - Main View",
+        "type": "image",
+        "isPrimary": true
+      }
+    ],
+    "primaryImageUrl": "https://example.com/headphones-main.jpg"
+  },
+  "seo": {
+    "metaTitle": "Premium Wireless Bluetooth Headphones - AudioTech",
+    "metaDescription": "Premium wireless Bluetooth headphones with 30-hour battery and noise cancellation",
+    "keywords": ["wireless headphones", "bluetooth", "noise cancelling"],
+    "slug": "wireless-bluetooth-headphones-audiotech"
+  },
+  "categories": {
+    "primaryCategories": ["Electronics", "Audio"],
+    "taxonomy": {
+      "department": "Electronics",
+      "category": "Audio",
+      "subcategory": "Headphones"
+    }
+  }
+}
+```
+
+### Product with Variants
+
+```typescript
+// POST /products
+{
+  "catalog": {
+    "name": "Cotton T-Shirt",
+    "sku": "TS-BASE",
+    "type": "physical",
+    "status": "active"
+  },
+  "variants": {
+    "hasVariants": true,
+    "variantOptions": [
+      {
+        "type": "size",
+        "name": "Size",
+        "values": [
+          { "value": "S", "displayName": "Small" },
+          { "value": "M", "displayName": "Medium" },
+          { "value": "L", "displayName": "Large" }
+        ]
+      },
+      {
+        "type": "color",
+        "name": "Color",
+        "values": [
+          { "value": "red", "displayName": "Red", "colorCode": "#FF0000" },
+          { "value": "blue", "displayName": "Blue", "colorCode": "#0000FF" }
+        ]
+      }
+    ],
+    "combinations": [
+      {
+        "sku": "TS-S-RED",
+        "options": { "size": "S", "color": "red" },
+        "price": 25.99,
+        "stock": 50
+      },
+      {
+        "sku": "TS-M-BLUE",
+        "options": { "size": "M", "color": "blue" },
+        "price": 25.99,
+        "stock": 30
+      }
+    ]
+  }
+}
+```
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/products` | Create product |
+| GET | `/products` | List products with filters |
+| GET | `/products/:id` | Get product by ID |
+| PUT | `/products/:id` | Update product |
+| DELETE | `/products/:id` | Soft delete product |
+| GET | `/products/search/advanced` | Advanced search with filters |
+| GET | `/products/sku/:sku` | Find by SKU |
+| GET | `/products/barcode/:barcode` | Find by barcode |
+| PUT | `/products/:id/stock` | Update stock |
+| POST | `/products/:id/stock/reserve` | Reserve stock |
+| GET | `/products/inventory/low-stock` | Get low stock products |
+| PUT | `/products/:id/price` | Update price |
+| POST | `/products/:id/discount` | Apply discount |
+| GET | `/products/:id/variants` | Get product variants |
+| POST | `/products/:id/media` | Add media |
+| PUT | `/products/:id/seo` | Update SEO data |
+| GET | `/products/analytics/stats` | Product statistics |
+| POST | `/products/bulk/import` | Bulk import |
+| POST | `/products/:id/duplicate` | Duplicate product |
 
 ---
 

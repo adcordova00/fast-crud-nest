@@ -1,6 +1,7 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { LoginModule } from './modules/login/login.module';
+import { ProductsModule } from './modules/products/products.module';
 
 type FastCrudModuleOptions = {
   onboarding?: {
@@ -8,6 +9,10 @@ type FastCrudModuleOptions = {
     imports?: any[]; // Imports adicionales para el módulo
   };
   login?: {
+    repositoryProvider: Provider;
+    imports?: any[]; // Imports adicionales para el módulo
+  };
+  products?: {
     repositoryProvider: Provider;
     imports?: any[]; // Imports adicionales para el módulo
   };
@@ -42,6 +47,17 @@ export class FastCrudModule {
         LoginModule.register({
           repositoryProvider: options.login.repositoryProvider,
           imports: options.login.imports,
+        })
+      );
+    }
+
+    // Register Products Module if provided
+    if (options.products?.repositoryProvider) {
+      console.log('[FAST-CRUD] Registering ProductsModule');
+      modules.push(
+        ProductsModule.register({
+          repositoryProvider: options.products.repositoryProvider,
+          imports: options.products.imports,
         })
       );
     }
