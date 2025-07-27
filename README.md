@@ -75,9 +75,11 @@ import {
   LoginEntity, 
   OnboardingEntity,
   ProductsEntity,
+  AppointmentsEntity,
   LOGIN_REPOSITORY_PORT,
   ONBOARDING_REPOSITORY_PORT,
-  PRODUCTS_REPOSITORY_PORT 
+  PRODUCTS_REPOSITORY_PORT,
+  APPOINTMENTS_REPOSITORY_PORT 
 } from 'fast-crud-nest';
 
 @Module({
@@ -85,29 +87,35 @@ import {
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'app.db',
-      entities: [LoginEntity, OnboardingEntity],
+      entities: [LoginEntity, OnboardingEntity, ProductsEntity, AppointmentsEntity],
       synchronize: true,
     }),
     FastCrudModule.forRoot({
-      // All modules are optional - use what you need
-      login: {
-        repositoryProvider: {
-          provide: LOGIN_REPOSITORY_PORT,
-          useClass: YourLoginRepository, // Your implementation
+              // All modules are optional - use what you need
+        login: {
+          repositoryProvider: {
+            provide: LOGIN_REPOSITORY_PORT,
+            useClass: YourLoginRepository, // Your implementation
+          },
         },
-      },
-      onboarding: {
-        repositoryProvider: {
-          provide: ONBOARDING_REPOSITORY_PORT,
-          useClass: YourOnboardingRepository, // Your implementation
+        onboarding: {
+          repositoryProvider: {
+            provide: ONBOARDING_REPOSITORY_PORT,
+            useClass: YourOnboardingRepository, // Your implementation
+          },
         },
-      },
-      products: {
-        repositoryProvider: {
-          provide: PRODUCTS_REPOSITORY_PORT,
-          useClass: YourProductsRepository, // Your implementation
+        products: {
+          repositoryProvider: {
+            provide: PRODUCTS_REPOSITORY_PORT,
+            useClass: YourProductsRepository, // Your implementation
+          },
         },
-      },
+        appointments: {
+          repositoryProvider: {
+            provide: APPOINTMENTS_REPOSITORY_PORT,
+            useClass: YourAppointmentsRepository, // Your implementation
+          },
+        },
     }),
   ],
 })
@@ -481,6 +489,177 @@ The Products module provides comprehensive e-commerce product management:
 | GET | `/products/analytics/stats` | Product statistics |
 | POST | `/products/bulk/import` | Bulk import |
 | POST | `/products/:id/duplicate` | Duplicate product |
+
+---
+
+## 📅 Appointments Module Usage
+
+The Appointments module provides comprehensive appointment scheduling and management:
+
+### Basic Appointment Creation
+
+```typescript
+// POST /appointments
+{
+  "schedule": {
+    "startDateTime": "2024-01-15T10:00:00Z",
+    "endDateTime": "2024-01-15T11:00:00Z",
+    "durationMinutes": 60,
+    "timezone": "America/New_York",
+    "status": "scheduled",
+    "type": "consultation",
+    "priority": 5,
+    "confirmationCode": "APT-001234"
+  },
+  "service": {
+    "name": "Medical Consultation",
+    "description": "General health consultation with Dr. Smith",
+    "category": "medical",
+    "serviceCode": "MED-CONS-001",
+    "defaultDurationMinutes": 60,
+    "price": 150.00,
+    "currency": "USD"
+  },
+  "participants": {
+    "participants": [
+      {
+        "role": "client",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "+1234567890",
+        "isRequired": true
+      },
+      {
+        "role": "provider",
+        "name": "Dr. Smith",
+        "email": "drsmith@clinic.com",
+        "isRequired": true
+      }
+    ],
+    "primaryClientId": "client-123",
+    "primaryProviderId": "provider-456",
+    "maxParticipants": 2
+  },
+  "location": {
+    "type": "physical",
+    "name": "Main Clinic",
+    "physical": {
+      "address": "123 Health St",
+      "city": "Medical City",
+      "state": "CA",
+      "zipCode": "90210",
+      "room": "Room 101"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true,
+      "parkingAvailable": true
+    }
+  },
+  "reminders": {
+    "reminders": [
+      {
+        "type": "email",
+        "minutesBefore": 1440,
+        "message": "Your appointment is tomorrow",
+        "enabled": true
+      },
+      {
+        "type": "sms",
+        "minutesBefore": 60,
+        "message": "Your appointment is in 1 hour",
+        "enabled": true
+      }
+    ]
+  },
+  "payment": {
+    "totalAmount": 150.00,
+    "currency": "USD",
+    "status": "unpaid",
+    "method": "credit_card"
+  }
+}
+```
+
+### Virtual Appointment
+
+```typescript
+// POST /appointments
+{
+  "schedule": {
+    "startDateTime": "2024-01-16T14:00:00Z",
+    "endDateTime": "2024-01-16T15:00:00Z",
+    "type": "virtual"
+  },
+  "service": {
+    "name": "Telehealth Consultation",
+    "category": "medical"
+  },
+  "location": {
+    "type": "virtual",
+    "virtual": {
+      "platform": "Zoom",
+      "meetingId": "123-456-789",
+      "password": "health2024",
+      "url": "https://zoom.us/j/123456789"
+    }
+  }
+}
+```
+
+### Recurring Appointment
+
+```typescript
+// POST /appointments/recurring
+{
+  "schedule": {
+    "startDateTime": "2024-01-15T09:00:00Z",
+    "endDateTime": "2024-01-15T10:00:00Z",
+    "type": "routine"
+  },
+  "service": {
+    "name": "Physical Therapy Session",
+    "category": "therapy"
+  },
+  "recurrence": {
+    "pattern": "weekly",
+    "interval": 1,
+    "daysOfWeek": [1, 3, 5],
+    "endDate": "2024-03-15T23:59:59Z",
+    "occurrences": 24
+  }
+}
+```
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/appointments` | Create appointment |
+| GET | `/appointments` | List appointments with filters |
+| GET | `/appointments/:id` | Get appointment by ID |
+| PUT | `/appointments/:id` | Update appointment |
+| DELETE | `/appointments/:id` | Cancel appointment |
+| GET | `/appointments/search/advanced` | Advanced search with filters |
+| GET | `/appointments/confirmation/:code` | Find by confirmation code |
+| GET | `/appointments/provider/:providerId` | Get provider's appointments |
+| GET | `/appointments/client/:clientId` | Get client's appointments |
+| GET | `/appointments/availability/check` | Check provider availability |
+| GET | `/appointments/availability/slots` | Find available time slots |
+| GET | `/appointments/schedule/:providerId` | Get provider schedule |
+| PUT | `/appointments/:id/confirm` | Confirm appointment |
+| PUT | `/appointments/:id/cancel` | Cancel appointment |
+| PUT | `/appointments/:id/reschedule` | Reschedule appointment |
+| PUT | `/appointments/:id/checkin` | Check-in appointment |
+| POST | `/appointments/recurring` | Create recurring appointments |
+| PUT | `/appointments/:id/payment/status` | Update payment status |
+| POST | `/appointments/:id/payment/process` | Process payment |
+| GET | `/appointments/analytics/stats` | Appointment statistics |
+| PUT | `/appointments/bulk/status` | Bulk status update |
+| POST | `/appointments/emergency` | Create emergency appointment |
+| POST | `/appointments/:id/notifications/:type` | Send notifications |
+| GET | `/appointments/schedule/today` | Today's appointments |
+| GET | `/appointments/schedule/week` | This week's appointments |
+| GET | `/appointments/dashboard/summary` | Dashboard summary |
 
 ---
 
