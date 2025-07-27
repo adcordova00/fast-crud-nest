@@ -2,6 +2,7 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { LoginModule } from './modules/login/login.module';
 import { ProductsModule } from './modules/products/products.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
 
 type FastCrudModuleOptions = {
   onboarding?: {
@@ -13,6 +14,10 @@ type FastCrudModuleOptions = {
     imports?: any[]; // Imports adicionales para el módulo
   };
   products?: {
+    repositoryProvider: Provider;
+    imports?: any[]; // Imports adicionales para el módulo
+  };
+  appointments?: {
     repositoryProvider: Provider;
     imports?: any[]; // Imports adicionales para el módulo
   };
@@ -58,6 +63,17 @@ export class FastCrudModule {
         ProductsModule.register({
           repositoryProvider: options.products.repositoryProvider,
           imports: options.products.imports,
+        })
+      );
+    }
+
+    // Register Appointments Module if provided
+    if (options.appointments?.repositoryProvider) {
+      console.log('[FAST-CRUD] Registering AppointmentsModule');
+      modules.push(
+        AppointmentsModule.register({
+          repositoryProvider: options.appointments.repositoryProvider,
+          imports: options.appointments.imports,
         })
       );
     }
