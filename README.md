@@ -76,10 +76,12 @@ import {
   OnboardingEntity,
   ProductsEntity,
   AppointmentsEntity,
+  CustomersEntity,
   LOGIN_REPOSITORY_PORT,
   ONBOARDING_REPOSITORY_PORT,
   PRODUCTS_REPOSITORY_PORT,
-  APPOINTMENTS_REPOSITORY_PORT 
+  APPOINTMENTS_REPOSITORY_PORT,
+  CUSTOMERS_REPOSITORY_PORT 
 } from 'fast-crud-nest';
 
 @Module({
@@ -87,7 +89,7 @@ import {
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'app.db',
-      entities: [LoginEntity, OnboardingEntity, ProductsEntity, AppointmentsEntity],
+              entities: [LoginEntity, OnboardingEntity, ProductsEntity, AppointmentsEntity, CustomersEntity],
       synchronize: true,
     }),
     FastCrudModule.forRoot({
@@ -114,6 +116,12 @@ import {
           repositoryProvider: {
             provide: APPOINTMENTS_REPOSITORY_PORT,
             useClass: YourAppointmentsRepository, // Your implementation
+          },
+        },
+        customers: {
+          repositoryProvider: {
+            provide: CUSTOMERS_REPOSITORY_PORT,
+            useClass: YourCustomersRepository, // Your implementation
           },
         },
     }),
@@ -660,6 +668,211 @@ The Appointments module provides comprehensive appointment scheduling and manage
 | GET | `/appointments/schedule/today` | Today's appointments |
 | GET | `/appointments/schedule/week` | This week's appointments |
 | GET | `/appointments/dashboard/summary` | Dashboard summary |
+
+---
+
+## 👥 Customers Module Usage
+
+The Customers module provides comprehensive CRM functionality for managing customer relationships:
+
+### Individual Customer Creation
+
+```typescript
+// POST /customers
+{
+  "personal": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "fullName": "John Doe",
+    "title": "Mr",
+    "dateOfBirth": "1985-03-15",
+    "gender": "male",
+    "maritalStatus": "married",
+    "nationality": "American",
+    "occupation": "Software Engineer"
+  },
+  "contact": {
+    "primaryEmail": "john.doe@email.com",
+    "primaryPhone": "+1-555-0123",
+    "workPhone": "+1-555-0124",
+    "preferredContactMethod": "email",
+    "timezone": "America/New_York",
+    "allowMarketing": true,
+    "allowEmails": true
+  },
+  "addresses": [
+    {
+      "type": "home",
+      "street1": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "USA",
+      "isPrimary": true
+    },
+    {
+      "type": "billing",
+      "street1": "456 Work Ave",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10002",
+      "country": "USA"
+    }
+  ],
+  "financial": {
+    "paymentTerms": "net_30",
+    "creditLimit": 5000.00,
+    "creditRating": "good",
+    "currency": "USD"
+  },
+  "preferences": {
+    "language": "en",
+    "currency": "USD",
+    "timezone": "America/New_York",
+    "notifications": {
+      "email": true,
+      "sms": false,
+      "marketing": true
+    }
+  },
+  "loyalty": {
+    "tier": "bronze",
+    "points": 0,
+    "memberSince": "2024-01-15T00:00:00Z"
+  },
+  "segmentation": {
+    "segments": ["new_customer", "high_potential"],
+    "tags": ["web_signup", "newsletter_subscriber"],
+    "primarySegment": "new_customer"
+  },
+  "customerType": "individual",
+  "status": "active",
+  "source": "website"
+}
+```
+
+### Business Customer Creation
+
+```typescript
+// POST /customers
+{
+  "business": {
+    "companyName": "Acme Corporation",
+    "legalName": "Acme Corp LLC",
+    "taxId": "12-3456789",
+    "industry": "technology",
+    "businessSize": "medium",
+    "employeeCount": 150,
+    "annualRevenue": 2500000,
+    "website": "https://acme.com",
+    "description": "Leading software solutions provider"
+  },
+  "contact": {
+    "primaryEmail": "contact@acme.com",
+    "workPhone": "+1-555-0200",
+    "website": "https://acme.com"
+  },
+  "addresses": [
+    {
+      "type": "work",
+      "street1": "100 Business Plaza",
+      "city": "San Francisco",
+      "state": "CA",
+      "zipCode": "94105",
+      "country": "USA",
+      "isPrimary": true
+    }
+  ],
+  "financial": {
+    "paymentTerms": "net_30",
+    "creditLimit": 50000.00,
+    "creditRating": "excellent",
+    "currency": "USD"
+  },
+  "customerType": "business",
+  "status": "active",
+  "assignedTo": "sales-rep-123"
+}
+```
+
+### Customer Segmentation and Analytics
+
+```typescript
+// PUT /customers/123/segments
+{
+  "segments": ["high_value", "frequent_buyer", "vip"],
+  "reason": "Customer upgraded to VIP tier"
+}
+
+// GET /customers/analytics/stats
+{
+  "total": 15420,
+  "active": 12330,
+  "inactive": 2100,
+  "new": 450,
+  "churned": 540,
+  "vip": 230,
+  "averageLifetimeValue": 2850.00,
+  "totalRevenue": 43925000.00
+}
+```
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/customers` | Create customer |
+| GET | `/customers` | List customers with filters |
+| GET | `/customers/:id` | Get customer by ID |
+| PUT | `/customers/:id` | Update customer |
+| DELETE | `/customers/:id` | Delete customer |
+| GET | `/customers/search/advanced` | Advanced search with filters |
+| GET | `/customers/search/query/:query` | Text search customers |
+| GET | `/customers/number/:customerNumber` | Find by customer number |
+| GET | `/customers/email/:email` | Find by email |
+| PUT | `/customers/:id/status` | Update customer status |
+| PUT | `/customers/:id/activate` | Activate customer |
+| PUT | `/customers/:id/suspend` | Suspend customer |
+| PUT | `/customers/:id/credit-limit` | Update credit limit |
+| POST | `/customers/:id/payments` | Record payment |
+| PUT | `/customers/:id/loyalty/points` | Update loyalty points |
+| POST | `/customers/:id/loyalty/redeem` | Redeem loyalty points |
+| PUT | `/customers/:id/segments` | Update customer segments |
+| GET | `/customers/analytics/stats` | Customer statistics |
+| GET | `/customers/analytics/segments` | Segmentation report |
+| GET | `/customers/analytics/loyalty` | Loyalty program report |
+| GET | `/customers/analytics/geographic` | Geographic distribution |
+| GET | `/customers/analytics/industry` | Industry distribution |
+| PUT | `/customers/bulk/status` | Bulk status update |
+| PUT | `/customers/bulk/tags/add` | Bulk add tags |
+| PUT | `/customers/bulk/assign` | Bulk assign to rep |
+| POST | `/customers/merge` | Merge duplicate customers |
+| GET | `/customers/duplicates` | Find duplicate customers |
+| GET | `/customers/lifecycle/new` | New customers |
+| GET | `/customers/lifecycle/inactive` | Inactive customers |
+| GET | `/customers/lifecycle/at-risk` | At-risk customers |
+| GET | `/customers/lifecycle/high-value` | High-value customers |
+| GET | `/customers/location/city/:city` | Customers by city |
+| GET | `/customers/location/radius` | Customers in radius |
+| GET | `/customers/business/industry/:industry` | Customers by industry |
+| GET | `/customers/business/size/:size` | Customers by business size |
+| GET | `/customers/business/revenue` | Customers by revenue |
+| GET | `/customers/communication/preferences/:preference` | By communication preference |
+| GET | `/customers/marketing/opted-out` | Opted-out customers |
+| GET | `/customers/marketing/subscribed` | Marketing subscribers |
+| GET | `/customers/:id/insights` | Customer insights (AI) |
+| GET | `/customers/:id/recommendations/:type` | AI recommendations |
+| GET | `/customers/:id/similar` | Similar customers (AI) |
+| GET | `/customers/:id/data-export` | GDPR data export |
+| POST | `/customers/:id/anonymize` | GDPR anonymization |
+| PUT | `/customers/:id/consent/:type` | Update consent status |
+| GET | `/customers/:id/audit-log` | Customer audit log |
+| GET | `/customers/:id/interactions` | Interaction history |
+| GET | `/customers/:id/purchases` | Purchase history |
+| GET | `/customers/dashboard/summary` | CRM dashboard summary |
+| GET | `/customers/dashboard/activity` | Activity dashboard |
+| GET | `/customers/health/data-quality` | Data quality report |
+| GET | `/customers/health/duplicates-check` | Duplicates health check |
 
 ---
 

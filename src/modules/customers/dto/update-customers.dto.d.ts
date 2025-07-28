@@ -1,0 +1,30 @@
+import { CreateCustomersDto } from './create-customers.dto';
+type PersonalDto = CreateCustomersDto['personal'];
+type ContactDto = CreateCustomersDto['contact'];
+type AddressDto = CreateCustomersDto['addresses'];
+type BusinessDto = CreateCustomersDto['business'];
+type FinancialDto = CreateCustomersDto['financial'];
+type PreferencesDto = CreateCustomersDto['preferences'];
+type LoyaltyDto = CreateCustomersDto['loyalty'];
+type HistoryDto = CreateCustomersDto['history'];
+type SegmentationDto = CreateCustomersDto['segmentation'];
+export declare class UpdateCustomersDto {
+    personal?: Partial<PersonalDto>;
+    contact?: Partial<ContactDto>;
+    addresses?: Partial<AddressDto>[];
+    business?: Partial<BusinessDto>;
+    financial?: Partial<FinancialDto>;
+    preferences?: Partial<PreferencesDto>;
+    loyalty?: Partial<LoyaltyDto>;
+    history?: Partial<HistoryDto>;
+    segmentation?: Partial<SegmentationDto>;
+    customerNumber?: string;
+    customerType?: string;
+    status?: string;
+    source?: string;
+    assignedTo?: string;
+    createdDate?: string;
+    createdBy?: string;
+    organizationId?: string;
+}
+export {};

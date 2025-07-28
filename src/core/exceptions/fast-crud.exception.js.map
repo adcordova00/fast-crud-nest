@@ -1,0 +1,1 @@
+{"version":3,"file":"fast-crud.exception.js","sourceRoot":"","sources":["fast-crud.exception.ts"],"names":[],"mappings":";;;AAAA,MAAa,iBAAkB,SAAQ,KAAK;IACxC,YACoB,IAAY,EACZ,OAAe,EACf,aAAqB,GAAG,EACxB,OAAa;QAE7B,KAAK,CAAC,OAAO,CAAC,CAAC;QALC,SAAI,GAAJ,IAAI,CAAQ;QACZ,YAAO,GAAP,OAAO,CAAQ;QACf,eAAU,GAAV,UAAU,CAAc;QACxB,YAAO,GAAP,OAAO,CAAM;IAGjC,CAAC;CACJ;AATD,8CASC"}
