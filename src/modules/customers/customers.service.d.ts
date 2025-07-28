@@ -1,0 +1,30 @@
+import { CustomersRepositoryPort } from '../../core/ports/customers-repository.port';
+import { CreateCustomersDto } from './dto/create-customers.dto';
+import { UpdateCustomersDto } from './dto/update-customers.dto';
+export declare class CustomersService {
+    private readonly repository;
+    constructor(repository: CustomersRepositoryPort);
+    create(dto: CreateCustomersDto): Promise<any>;
+    findAll(params?: any): Promise<any[]>;
+    findById(id: string): Promise<any>;
+    update(id: string, dto: UpdateCustomersDto): Promise<any>;
+    softDelete(id: string): Promise<void>;
+    findByCustomerNumber(customerNumber: string): Promise<any>;
+    findByEmail(email: string): Promise<any>;
+    searchCustomers(query: string): Promise<any[]>;
+    updateStatus(id: string, status: string, reason?: string): Promise<void>;
+    activateCustomer(id: string): Promise<void>;
+    suspendCustomer(id: string, reason: string): Promise<void>;
+    updateCreditLimit(id: string, newLimit: number): Promise<void>;
+    recordPayment(id: string, amount: number, paymentMethod: string): Promise<void>;
+    updateLoyaltyPoints(id: string, points: number, operation: 'add' | 'subtract' | 'set'): Promise<void>;
+    redeemPoints(id: string, points: number, rewardId: string): Promise<void>;
+    updateSegments(id: string, segments: string[]): Promise<void>;
+    advancedSearch(criteria: any): Promise<any>;
+    getCustomerStats(startDate?: string, endDate?: string): Promise<any>;
+    bulkUpdateStatus(customerIds: string[], status: string): Promise<void>;
+    mergeCustomers(primaryId: string, duplicateIds: string[]): Promise<void>;
+    private generateCustomerNumber;
+    private validateStatusTransition;
+    private checkActiveBusinesses;
+}

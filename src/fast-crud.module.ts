@@ -3,6 +3,7 @@ import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { LoginModule } from './modules/login/login.module';
 import { ProductsModule } from './modules/products/products.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { CustomersModule } from './modules/customers/customers.module';
 
 type FastCrudModuleOptions = {
   onboarding?: {
@@ -18,6 +19,10 @@ type FastCrudModuleOptions = {
     imports?: any[]; // Imports adicionales para el módulo
   };
   appointments?: {
+    repositoryProvider: Provider;
+    imports?: any[]; // Imports adicionales para el módulo
+  };
+  customers?: {
     repositoryProvider: Provider;
     imports?: any[]; // Imports adicionales para el módulo
   };
@@ -74,6 +79,17 @@ export class FastCrudModule {
         AppointmentsModule.register({
           repositoryProvider: options.appointments.repositoryProvider,
           imports: options.appointments.imports,
+        })
+      );
+    }
+
+    // Register Customers Module if provided
+    if (options.customers?.repositoryProvider) {
+      console.log('[FAST-CRUD] Registering CustomersModule');
+      modules.push(
+        CustomersModule.register({
+          repositoryProvider: options.customers.repositoryProvider,
+          imports: options.customers.imports,
         })
       );
     }

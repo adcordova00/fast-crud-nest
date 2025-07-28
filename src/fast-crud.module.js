@@ -21,7 +21,6 @@ let FastCrudModule = FastCrudModule_1 = class FastCrudModule {
             throw new Error('[FAST-CRUD] FastCrudModule requires at least one module configuration. Please provide implementations for the modules you want to use.');
         }
         const modules = [];
-        // Register Onboarding Module if provided
         if (options.onboarding?.repositoryProvider) {
             console.log('[FAST-CRUD] Registering OnboardingModule');
             modules.push(onboarding_module_1.OnboardingModule.register({
@@ -29,7 +28,6 @@ let FastCrudModule = FastCrudModule_1 = class FastCrudModule {
                 imports: options.onboarding.imports,
             }));
         }
-        // Register Login Module if provided
         if (options.login?.repositoryProvider) {
             console.log('[FAST-CRUD] Registering LoginModule');
             modules.push(login_module_1.LoginModule.register({
@@ -37,7 +35,6 @@ let FastCrudModule = FastCrudModule_1 = class FastCrudModule {
                 imports: options.login.imports,
             }));
         }
-        // Register Products Module if provided
         if (options.products?.repositoryProvider) {
             console.log('[FAST-CRUD] Registering ProductsModule');
             modules.push(products_module_1.ProductsModule.register({
@@ -45,7 +42,6 @@ let FastCrudModule = FastCrudModule_1 = class FastCrudModule {
                 imports: options.products.imports,
             }));
         }
-        // Register Appointments Module if provided
         if (options.appointments?.repositoryProvider) {
             console.log('[FAST-CRUD] Registering AppointmentsModule');
             modules.push(appointments_module_1.AppointmentsModule.register({
@@ -53,7 +49,6 @@ let FastCrudModule = FastCrudModule_1 = class FastCrudModule {
                 imports: options.appointments.imports,
             }));
         }
-        // Register Customers Module if provided
         if (options.customers?.repositoryProvider) {
             console.log('[FAST-CRUD] Registering CustomersModule');
             modules.push(customers_module_1.CustomersModule.register({
@@ -75,3 +70,4 @@ exports.FastCrudModule = FastCrudModule;
 exports.FastCrudModule = FastCrudModule = FastCrudModule_1 = __decorate([
     (0, common_1.Module)({})
 ], FastCrudModule);
+//# sourceMappingURL=fast-crud.module.js.map

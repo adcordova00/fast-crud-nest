@@ -1,0 +1,32 @@
+import { AppointmentsRepositoryPort } from '../../core/ports/appointments-repository.port';
+import { CreateAppointmentsDto } from './dto/create-appointments.dto';
+import { UpdateAppointmentsDto } from './dto/update-appointments.dto';
+export declare class AppointmentsService {
+    private readonly repository;
+    constructor(repository: AppointmentsRepositoryPort);
+    create(dto: CreateAppointmentsDto): Promise<any>;
+    findAll(params?: any): Promise<any[]>;
+    findById(id: string): Promise<any>;
+    update(id: string, dto: UpdateAppointmentsDto): Promise<any>;
+    softDelete(id: string): Promise<void>;
+    findByConfirmationCode(code: string): Promise<any>;
+    findByProvider(providerId: string): Promise<any[]>;
+    findByClient(clientId: string): Promise<any[]>;
+    checkAvailability(providerId: string, startTime: string, endTime: string): Promise<boolean>;
+    findAvailableSlots(providerId: string, date: string, duration: number): Promise<any>;
+    getSchedule(providerId: string, startDate: string, endDate: string): Promise<any[]>;
+    confirmAppointment(id: string): Promise<void>;
+    cancelAppointment(id: string, reason?: string): Promise<void>;
+    rescheduleAppointment(id: string, newStartTime: string, newEndTime: string): Promise<void>;
+    checkIn(id: string): Promise<void>;
+    createRecurringAppointments(templateData: CreateAppointmentsDto): Promise<any[]>;
+    updatePaymentStatus(id: string, status: string, transactionId?: string): Promise<void>;
+    processPayment(id: string, amount: number, method: string): Promise<any>;
+    getAppointmentStats(startDate?: string, endDate?: string): Promise<any>;
+    getProviderStats(providerId: string, startDate?: string, endDate?: string): Promise<any>;
+    searchAppointments(query: any): Promise<any>;
+    bulkUpdateStatus(appointmentIds: string[], status: string): Promise<void>;
+    bulkCancel(appointmentIds: string[], reason?: string): Promise<void>;
+    createEmergencyAppointment(data: CreateAppointmentsDto): Promise<any>;
+    sendAppointmentNotification(id: string, type: 'confirmation' | 'reminder' | 'cancellation' | 'reschedule'): Promise<void>;
+}
